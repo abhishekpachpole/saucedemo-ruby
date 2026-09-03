@@ -1,11 +1,3 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# This workflow will download a prebuilt Ruby version, install dependencies and run tests with Rake
-# For more information see: https://github.com/marketplace/actions/setup-ruby-jruby-and-truffleruby
-
-
 name: RSpec Automation Suite
 
 # When this workflow runs:
@@ -34,12 +26,13 @@ jobs:
           ruby-version: '4.0.6'
           bundler-cache: true
 
-      # 3. Install Chrome on the runner (GitHub's ubuntu-latest image
-      #    usually already has it, but this pins/ensures a known version)
-      - name: Set up Chrome
-        uses: browser-actions/setup-chrome@v1
-        with:
-          chrome-version: stable
+      # 3. ubuntu-latest already ships with Chrome + a matching chromedriver
+      #    pre-installed, and Selenium Manager (bundled in selenium-webdriver
+      #    4.6+) auto-detects it. We intentionally do NOT install a second
+      #    Chrome here -- doing so causes version/PATH conflicts that crash
+      #    Chrome on launch ("session not created" errors).
+      - name: Print installed Chrome version (debug info)
+        run: google-chrome --version || chromium-browser --version || true
 
       # 4. Run the test suite headlessly.
       #    HEADLESS=true is the default in our Capybara config anyway,
@@ -49,7 +42,18 @@ jobs:
           HEADLESS: 'true'
         run: bundle exec rspec
 
-      # 5. Upload the RSpec results file for inspection/history.
+      # 5. Even if tests fail, upload any failure screenshots so you can
+      #    open them from the GitHub Actions run page and see exactly
+      #    what the browser looked like when the test failed.
+      - name: Upload failure screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failure-screenshots
+          path: screenshots/
+          if-no-files-found: ignore
+
+      # 6. Upload the RSpec results file for inspection/history.
       - name: Upload RSpec status
         if: always()
         uses: actions/upload-artifact@v4
