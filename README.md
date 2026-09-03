@@ -54,10 +54,9 @@ saucedemo-ruby/
         └── checkout_spec.rb
 ```
 
-Page Object Model: each file in spec/pages/ encapsulates how to interact with one page of the app (selectors, clicks, form fills). Test files in spec/tests/ stay focused on what to verify, not how to interact with the UI — so a markup change only needs a fix in one place.
+**Page Object Model:** Each file in spec/pages/ encapsulates how to interact with one page of the app (selectors, clicks, form fills). Test files in spec/tests/ stay focused on what to verify, not how to interact with the UI — so a markup change only needs a fix in one place.
 
-Continuous Integration
-
+**Continuous Integration**
 Every push and pull request to main runs the full suite automatically via GitHub Actions (.github/workflows/ci.yml), headless, with no local setup required. See the Actions tab for run history.
 
 If a test fails, a screenshot of the browser at the moment of failure is automatically saved and uploaded as a downloadable artifact on that run's summary page — useful for debugging without re-running locally.
