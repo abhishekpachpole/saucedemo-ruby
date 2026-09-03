@@ -1,6 +1,8 @@
 # SauceDemo Ruby Automation
 
-UI automation framework for SauceDemo using Ruby, RSpec, Capybara, Selenium WebDriver, and the Page Object Model.
+A UI test automation framework for SauceDemo, built with Ruby, RSpec, and Capybara/Selenium WebDriver, using the Page Object Model pattern. Covers the core user journey: login, product inventory, cart, and checkout.
+
+This project contains SauceDemo UI tests only.
 
 ## Requirements
 
@@ -19,6 +21,7 @@ bundle install
 ```bash
 bundle exec rspec
 ```
+By default, tests run headless (no visible browser window) — this is required for CI and faster locally. To watch the browser while tests
 
 ## Run individual suites
 
@@ -51,7 +54,13 @@ saucedemo-ruby/
         └── checkout_spec.rb
 ```
 
-This project contains SauceDemo UI tests only. API tests and unrelated tests are intentionally excluded.
+Page Object Model: each file in spec/pages/ encapsulates how to interact with one page of the app (selectors, clicks, form fills). Test files in spec/tests/ stay focused on what to verify, not how to interact with the UI — so a markup change only needs a fix in one place.
+
+Continuous Integration
+
+Every push and pull request to main runs the full suite automatically via GitHub Actions (.github/workflows/ci.yml), headless, with no local setup required. See the Actions tab for run history.
+
+If a test fails, a screenshot of the browser at the moment of failure is automatically saved and uploaded as a downloadable artifact on that run's summary page — useful for debugging without re-running locally.
 
 ## Notes
 
