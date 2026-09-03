@@ -37,9 +37,13 @@ bundle exec rspec spec/tests/checkout_spec.rb
 ```text
 saucedemo-ruby/
 ├── Gemfile
+├── Gemfile.lock
 ├── README.md
 ├── .gitignore
 ├── .rspec
+├── .github/
+│   └── workflows/
+│       └── ci.yml
 └── spec/
     ├── spec_helper.rb
     ├── pages/
@@ -66,5 +70,3 @@ The test suite uses SauceDemo's standard demo credentials:
 
 - Username: `standard_user`
 - Password: `secret_sauce`
-
-Chrome must be installed and available on the machine. Selenium Manager will handle the browser driver automatically with current Selenium versions.
