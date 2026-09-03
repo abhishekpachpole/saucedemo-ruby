@@ -1,0 +1,59 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will download a prebuilt Ruby version, install dependencies and run tests with Rake
+# For more information see: https://github.com/marketplace/actions/setup-ruby-jruby-and-truffleruby
+
+
+name: RSpec Automation Suite
+
+# When this workflow runs:
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  # Lets you manually trigger a run from the GitHub Actions tab
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Pull your repo's code onto the runner
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Install Ruby + gems (this action also caches gems automatically
+      #    between runs when bundler-cache: true, so future runs are faster)
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '4.0.6'
+          bundler-cache: true
+
+      # 3. Install Chrome on the runner (GitHub's ubuntu-latest image
+      #    usually already has it, but this pins/ensures a known version)
+      - name: Set up Chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
+
+      # 4. Run the test suite headlessly.
+      #    HEADLESS=true is the default in our Capybara config anyway,
+      #    but setting it explicitly here documents intent for CI.
+      - name: Run RSpec suite
+        env:
+          HEADLESS: 'true'
+        run: bundle exec rspec
+
+      # 5. Upload the RSpec results file for inspection/history.
+      - name: Upload RSpec status
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rspec-status
+          path: .rspec_status
+          if-no-files-found: ignore
